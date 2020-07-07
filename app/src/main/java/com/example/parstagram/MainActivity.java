@@ -7,18 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.parstagram.fragments.ComposeFragment;
+import com.example.parstagram.fragments.PostDetailsFragment;
 import com.example.parstagram.fragments.PostsFragment;
 import com.example.parstagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PostsFragment.OnItemSelectedListener{
     private static final String TAG = "MainActivity";
     BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) { //menuItem is one of the items we put on the bar
@@ -53,5 +52,12 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_home); //default tab open
     }
 
-
+    @Override
+    public void onRssItemSelected(Post post) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        PostDetailsFragment fragment = PostDetailsFragment.newInstance(post);
+        ft.replace(R.id.flContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
 }

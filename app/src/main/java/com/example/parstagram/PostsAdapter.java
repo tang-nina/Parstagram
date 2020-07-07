@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,12 +17,19 @@ import com.parse.ParseFile;
 import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
+
+    public interface OnClickListener{
+        void onItemClicked(int position);
+    }
+
+    OnClickListener onClickListener;
     Context context;
     List<Post> posts;
 
-public PostsAdapter(Context context, List<Post> posts){
+public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickListener){
     this.context = context;
     this.posts = posts;
+    this.onClickListener = onClickListener;
 }
 
     @NonNull
@@ -42,7 +50,21 @@ public PostsAdapter(Context context, List<Post> posts){
         return posts.size();
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        posts.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Post> list) {
+        posts.addAll(list);
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder{
+
+    LinearLayout llPosts;
     TextView tvUsername;
     TextView tvDescription;
     ImageView ivImage;
@@ -52,9 +74,18 @@ public PostsAdapter(Context context, List<Post> posts){
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvDescription = itemView.findViewById(R.id.tvDescription);
             ivImage = itemView.findViewById(R.id.ivImage);
+            llPosts = itemView.findViewById(R.id.llPost);
         }
 
-        public void bind(Post post) {
+        public void bind(final Post post) {
+
+           llPosts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    onClickListener.onItemClicked(getAdapterPosition());
+                }
+            });
+
             tvUsername.setText(post.getUser().getUsername());
             tvDescription.setText(post.getDescription());
 

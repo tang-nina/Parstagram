@@ -13,7 +13,7 @@ import java.util.List;
 public class YourPostsFragment extends PostsFragment {
     private static final String TAG = "ProfileFragment";
     @Override
-    protected void queryPost(){
+    protected void queryPost(final boolean refresh){
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
@@ -26,9 +26,16 @@ public class YourPostsFragment extends PostsFragment {
                     Log.e(TAG, "something went wrong", e);
                     return;
                 }else{
-                    posts.addAll(objects);
-                    adapter.notifyDataSetChanged();
+                    if(refresh){
+                        adapter.clear();
+                        adapter.addAll(objects);
+                        swipeContainer.setRefreshing(false);
+                    }else{
+                        posts.addAll(objects);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
+
             }
         });
     }
