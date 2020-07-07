@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new ComposeFragment();
                         break;
                     case R.id.action_profile:
+                        //fragment = new YourPostsFragment();
                         fragment = new ProfileFragment();
                         break;
                     default:

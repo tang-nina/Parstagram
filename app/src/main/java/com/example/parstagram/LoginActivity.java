@@ -13,11 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     
     Button btnLogin;
+    Button btnSignUp;
     EditText etUsername;
     EditText etPassword;
 
@@ -33,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
+        btnSignUp = findViewById(R.id.btnSignUp);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +44,17 @@ public class LoginActivity extends AppCompatActivity {
                 String password = etPassword.getText().toString();
                 
                 login(username, password);
+            }
+        });
+
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String username = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
+
+                signUp(username, password);
             }
         });
     }
@@ -61,7 +75,25 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        
+    }
+
+    private void signUp(String username, String password){
+        ParseUser user = new ParseUser();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        user.signUpInBackground(new SignUpCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
+                    goToMainActivity();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Login unsuccessful.", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Issue with login.", e);
+                    return;
+                }
+            }
+        });
     }
 
     private void goToMainActivity() {
