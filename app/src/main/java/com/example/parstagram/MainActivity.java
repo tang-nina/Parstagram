@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements PostsFragment.OnI
                         break;
                     case R.id.action_compose:
                         fragment = new ComposeFragment();
-                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_profile:
                         //fragment = new YourPostsFragment();
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements PostsFragment.OnI
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                         ProfileFragment fragmentDemo = ProfileFragment.newInstance(ParseUser.getCurrentUser().getObjectId());
                         ft.replace(R.id.flContainer, fragmentDemo);
+                        ft.addToBackStack(null);
                         ft.commit();
                         break;
                     default:
@@ -59,10 +60,20 @@ public class MainActivity extends AppCompatActivity implements PostsFragment.OnI
     }
 
     @Override
-    public void onRssItemSelected(Post post) {
+    public void onPostDetailsItemSelected(Post post) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         PostDetailsFragment fragment = PostDetailsFragment.newInstance(post);
         ft.replace(R.id.flContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+
+    }
+
+    @Override
+    public void onUserDetailItemSelected(String objectId) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ProfileFragment fragmentDemo = ProfileFragment.newInstance(objectId);
+        ft.replace(R.id.flContainer, fragmentDemo);
         ft.addToBackStack(null);
         ft.commit();
     }

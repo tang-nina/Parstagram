@@ -43,7 +43,8 @@ public class PostsFragment extends Fragment {
     // Define the events that the fragment will use to communicate
     public interface OnItemSelectedListener {
         // This can be any number of events to be sent to the activity
-        public void onRssItemSelected(Post post);
+        public void onPostDetailsItemSelected(Post post);
+        public void onUserDetailItemSelected(String userId);
     }
 
     public PostsFragment() {
@@ -80,8 +81,13 @@ public class PostsFragment extends Fragment {
         //will bring up a screen where user can edit the item
         PostsAdapter.OnClickListener onClickListener = new PostsAdapter.OnClickListener(){
             @Override
-            public void onItemClicked(int position) {
-                listener.onRssItemSelected(posts.get(position));
+            public void onItemClickedPostDetails(int position) {
+                listener.onPostDetailsItemSelected(posts.get(position));
+            }
+
+            @Override
+            public void onItemClickedUserDetails(String objectId) {
+                listener.onUserDetailItemSelected(objectId);
             }
         };
 

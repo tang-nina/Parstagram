@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,8 @@ import java.util.List;
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
     public interface OnClickListener{
-        void onItemClicked(int position);
+        void onItemClickedPostDetails(int position);
+        void onItemClickedUserDetails(String userId);
     }
 
     OnClickListener onClickListener;
@@ -70,6 +72,7 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
     TextView tvTimestamp;
     ImageView ivImage;
     ImageView ivProfilePic;
+    RelativeLayout rlHeader;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -81,6 +84,8 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
             ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
 
             llPosts = itemView.findViewById(R.id.llPost);
+            rlHeader = itemView.findViewById(R.id.rlHeader);
+
         }
 
         public void bind(final Post post) {
@@ -88,7 +93,14 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
            llPosts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
-                    onClickListener.onItemClicked(getAdapterPosition());
+                    onClickListener.onItemClickedPostDetails(getAdapterPosition());
+                }
+            });
+
+            rlHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    onClickListener.onItemClickedUserDetails(post.getUser().getObjectId());
                 }
             });
 
