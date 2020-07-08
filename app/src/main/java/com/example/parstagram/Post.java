@@ -62,6 +62,4 @@ public class Post extends ParseObject implements Serializable {
         return relativeDate;
     }
 
-
-
 }

@@ -14,6 +14,7 @@ import com.example.parstagram.fragments.PostDetailsFragment;
 import com.example.parstagram.fragments.PostsFragment;
 import com.example.parstagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity implements PostsFragment.OnItemSelectedListener{
     private static final String TAG = "MainActivity";
@@ -33,18 +34,23 @@ public class MainActivity extends AppCompatActivity implements PostsFragment.OnI
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
                         fragment = new PostsFragment();
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                         break;
                     case R.id.action_compose:
                         fragment = new ComposeFragment();
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                         break;
                     case R.id.action_profile:
                         //fragment = new YourPostsFragment();
-                        fragment = new ProfileFragment();
+                        //SEND CUR USER INTO PROFILE
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ProfileFragment fragmentDemo = ProfileFragment.newInstance(ParseUser.getCurrentUser().getObjectId());
+                        ft.replace(R.id.flContainer, fragmentDemo);
+                        ft.commit();
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + menuItem.getItemId());
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                 return true;
             }
         });
