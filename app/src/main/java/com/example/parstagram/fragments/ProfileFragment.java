@@ -204,7 +204,8 @@ public class ProfileFragment extends Fragment {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
-                ivProfilePic.setImageBitmap(takenImage);
+                //ivProfilePic.setImageBitmap(takenImage);
+                Glide.with(getContext()).load(photoFile).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
                 sendPost(user, photoFile);
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
