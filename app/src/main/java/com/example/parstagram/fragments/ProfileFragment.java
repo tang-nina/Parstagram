@@ -21,6 +21,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.parstagram.LoginActivity;
@@ -50,6 +51,8 @@ public class ProfileFragment extends Fragment {
 
     public String photoFileName = "photo.jpg";
     private File photoFile;
+
+    SwipeRefreshLayout swipeContainer;
 
     String id;
     ParseUser user;
@@ -128,6 +131,7 @@ public class ProfileFragment extends Fragment {
 
                 tvUsername.setText(user.getUsername());
 
+
                 ParseFile profilePicture = user.getParseFile("profilePic");
                 if(profilePicture != null){
                     Glide.with(view.getContext()).load(profilePicture.getUrl()).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
@@ -154,7 +158,25 @@ public class ProfileFragment extends Fragment {
                     }
                 });
 
-                queryPost(true);
+                swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+                // Setup refresh listener which triggers new data loading
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        // Your code to refresh the list here.
+                        // Make sure you call swipeContainer.setRefreshing(false)
+                        // once the network request has completed successfully.
+                        queryPost(true);
+                    }
+                });
+
+                // Configure the refreshing colors
+                swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                        android.R.color.holo_green_light,
+                        android.R.color.holo_orange_light,
+                        android.R.color.holo_red_light);
+
+                queryPost(false);
             }
         });
     }
@@ -242,6 +264,7 @@ public class ProfileFragment extends Fragment {
                     if(refresh){
                         adapter.clear();
                         adapter.addAll(objects);
+                        swipeContainer.setRefreshing(false);
                     }else{
                         posts.addAll(objects);
                         adapter.notifyDataSetChanged();
