@@ -1,6 +1,7 @@
 package com.example.parstagram;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,10 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -77,7 +82,37 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void signUp(String username, String password){
+    boolean saveBitmapToFile(File dir, String fileName, Bitmap bm,
+                             Bitmap.CompressFormat format, int quality) {
+
+        File imageFile = new File(dir,fileName);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(imageFile);
+
+            bm.compress(format,quality,fos);
+
+            fos.close();
+
+            return true;
+        }
+        catch (IOException e) {
+            Log.e("app",e.getMessage());
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
+    private void signUp(final String username, final String password){
+        Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
+
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);

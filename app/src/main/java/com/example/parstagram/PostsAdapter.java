@@ -67,13 +67,19 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
     LinearLayout llPosts;
     TextView tvUsername;
     TextView tvDescription;
+    TextView tvTimestamp;
     ImageView ivImage;
+    ImageView ivProfilePic;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvDescription = itemView.findViewById(R.id.tvDescription);
             ivImage = itemView.findViewById(R.id.ivImage);
+            tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+            ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
+
             llPosts = itemView.findViewById(R.id.llPost);
         }
 
@@ -88,12 +94,20 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
 
             tvUsername.setText(post.getUser().getUsername());
             tvDescription.setText(post.getDescription());
+            tvTimestamp.setText(Post.getRelativeTimeAgo(post.getTimestamp().toString()));
 
             ParseFile image = post.getImage();
             if(image !=null){
                 Glide.with(context).load(post.getImage().getUrl()).into(ivImage);
             }else{
                 ivImage.setVisibility(View.GONE);
+            }
+
+            ParseFile profilePicture = post.getUser().getParseFile("profilePic");
+            if(profilePicture != null){
+                Glide.with(context).load(profilePicture.getUrl()).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
+            }else{
+                Glide.with(context).load(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
             }
         }
     }
