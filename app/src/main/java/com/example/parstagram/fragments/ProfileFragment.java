@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.example.parstagram.EndlessRecyclerViewScrollListener;
 import com.example.parstagram.LoginActivity;
 import com.example.parstagram.Post;
 import com.example.parstagram.R;
@@ -36,6 +37,7 @@ import com.parse.SaveCallback;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -53,6 +55,8 @@ public class ProfileFragment extends Fragment {
     private File photoFile;
 
     SwipeRefreshLayout swipeContainer;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    Date lastPostTime;
 
     String id;
     ParseUser user;
@@ -128,6 +132,17 @@ public class ProfileFragment extends Fragment {
                 glm = new GridLayoutManager(view.getContext(), 3);
                 rvYourPosts.setAdapter(adapter);
                 rvYourPosts.setLayoutManager(glm);
+
+                scrollListener = new EndlessRecyclerViewScrollListener(glm) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                        // Triggered only when new data needs to be appended to the list
+                        // Add whatever code is needed to append new items to the bottom of the list
+                        loadNextDataFromApi(page);
+                    }
+                };
+                // Adds the scroll listener to RecyclerView
+                rvYourPosts.addOnScrollListener(scrollListener);
 
                 tvUsername.setText(user.getUsername());
 
@@ -248,6 +263,31 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    public void loadNextDataFromApi(int offset) {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.include(Post.KEY_USER);
+        query.setLimit(20);
+        query.whereEqualTo(Post.KEY_USER, user);
+        query.addDescendingOrder(Post.KEY_CREATED);
+        query.whereLessThan(Post.KEY_CREATED, lastPostTime);
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> objects, ParseException e) {
+                if( e != null){
+                    Log.e(TAG, "something went wrong", e);
+                    return;
+                }else{
+                    int size = objects.size();
+                    if(size != 0){
+                        lastPostTime = objects.get(size-1).getTimestamp();
+                        adapter.addAll(objects);
+                    }
+                }
+
+            }
+        });
+    }
+
     protected void queryPost(final boolean refresh){
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
@@ -261,10 +301,12 @@ public class ProfileFragment extends Fragment {
                     Log.e(TAG, "something went wrong", e);
                     return;
                 }else{
+                    lastPostTime = objects.get(objects.size()-1).getTimestamp();
                     if(refresh){
                         adapter.clear();
                         adapter.addAll(objects);
                         swipeContainer.setRefreshing(false);
+                        scrollListener.resetState();
                     }else{
                         posts.addAll(objects);
                         adapter.notifyDataSetChanged();
