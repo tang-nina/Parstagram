@@ -25,6 +25,7 @@ public class PostDetailsFragment extends Fragment {
     TextView tvUsername;
     ImageView ivPost;
     TextView tvTimestamp;
+    ImageView ivProfilePic;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,6 +74,7 @@ public class PostDetailsFragment extends Fragment {
         tvUsername = view.findViewById(R.id.tvUsername);
         ivPost = view.findViewById(R.id.ivPost);
         tvTimestamp = view.findViewById(R.id.tvTimestamp);
+        ivProfilePic = view.findViewById(R.id.ivProfilePic);
 
         tvCaption.setText(curPost.getDescription());
         tvUsername.setText(curPost.getUser().getUsername());
@@ -84,6 +86,13 @@ public class PostDetailsFragment extends Fragment {
             Glide.with(view.getContext()).load(curPost.getImage().getUrl()).into(ivPost);
         }else{
             ivPost.setVisibility(View.GONE);
+        }
+
+        ParseFile profilePicture = curPost.getUser().getParseFile("profilePic");
+        if(profilePicture != null){
+            Glide.with(view.getContext()).load(profilePicture.getUrl()).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
+        }else{
+            Glide.with(view.getContext()).load(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
         }
     }
 

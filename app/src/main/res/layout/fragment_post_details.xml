@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="false"
             android:layout_centerVertical="true"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/ivProfilePic"
             android:textStyle="bold"
             tools:text="Name" />
@@ -56,11 +56,13 @@
 
     <ImageView
         android:id="@+id/ivPost"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@+id/rlPoster"
-        android:layout_alignParentStart="true"
-        android:scaleType="fitCenter"
+        android:layout_alignParentStart="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
         tools:src="@tools:sample/avatars" />
 
 </RelativeLayout>
