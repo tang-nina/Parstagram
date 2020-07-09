@@ -117,6 +117,7 @@ public class ProfileFragment extends Fragment {
 
         if(!(id.equals(ParseUser.getCurrentUser().getObjectId()))){
             btnLogout.setVisibility(View.GONE);
+            ivCamera.setVisibility(View.GONE);
         }else{
             btnLogout.setOnClickListener(new View.OnClickListener() {
                 @Override
