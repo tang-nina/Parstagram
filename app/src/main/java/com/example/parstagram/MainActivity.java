@@ -16,7 +16,7 @@ import com.example.parstagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
 
-public class MainActivity extends AppCompatActivity implements PostsFragment.OnItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements PostsFragment.OnItemSelectedListener {
     private static final String TAG = "MainActivity";
     BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity implements PostsFragment.OnI
                         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
                         break;
                     case R.id.action_profile:
-                        //fragment = new YourPostsFragment();
-                        //SEND CUR USER INTO PROFILE
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                         ProfileFragment fragmentDemo = ProfileFragment.newInstance(ParseUser.getCurrentUser().getObjectId());
                         ft.replace(R.id.flContainer, fragmentDemo);
@@ -66,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements PostsFragment.OnI
         ft.replace(R.id.flContainer, fragment);
         ft.addToBackStack(null);
         ft.commit();
-
     }
 
     @Override

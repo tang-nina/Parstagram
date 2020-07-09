@@ -1,10 +1,12 @@
 package com.example.parstagram.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,10 @@ public class PostDetailsFragment extends Fragment {
     ImageView ivPost;
     TextView tvTimestamp;
     ImageView ivProfilePic;
+    RelativeLayout rlPoster;
+
+    private PostsFragment.OnItemSelectedListener listener;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,6 +58,18 @@ public class PostDetailsFragment extends Fragment {
         return fragment;
     }
 
+    // Store the listener (activity) that will have events fired once the fragment is attached
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof PostsFragment.OnItemSelectedListener) {
+            listener = (PostsFragment.OnItemSelectedListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement MyListFragment.OnItemSelectedListener");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +93,10 @@ public class PostDetailsFragment extends Fragment {
         ivPost = view.findViewById(R.id.ivPost);
         tvTimestamp = view.findViewById(R.id.tvTimestamp);
         ivProfilePic = view.findViewById(R.id.ivProfilePic);
+        rlPoster = view.findViewById(R.id.rlPoster);
 
         tvCaption.setText(curPost.getDescription());
         tvUsername.setText(curPost.getUser().getUsername());
-        System.out.println("HERE" + curPost.getTimestamp());
         tvTimestamp.setText(Post.getRelativeTimeAgo(curPost.getTimestamp().toString()));
 
         ParseFile image = curPost.getImage();
@@ -94,6 +112,15 @@ public class PostDetailsFragment extends Fragment {
         }else{
             Glide.with(view.getContext()).load(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
         }
+
+
+        rlPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                listener.onUserDetailItemSelected(curPost.getUser().getObjectId());
+            }
+        });
+
     }
 
 }
