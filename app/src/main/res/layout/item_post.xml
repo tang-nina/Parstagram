@@ -30,6 +30,7 @@
             android:layout_toEndOf="@+id/ivProfilePic"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             tools:text="Nina" />
+
     </RelativeLayout>
 
     <ImageView
@@ -41,10 +42,49 @@
         android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivLike"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:tag="unliked"
+            app:srcCompat="@drawable/ufi_heart" />
+
+        <ImageView
+            android:id="@+id/ivComment"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/ivLike"
+            app:srcCompat="@drawable/ufi_comment" />
+
+        <ImageView
+            android:id="@+id/ivDirect"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/ivComment"
+            app:srcCompat="@drawable/direct" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        tools:text="8 likes" />
+
     <TextView
         android:id="@+id/tvDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         tools:text="A description here." />
 
     <TextView
@@ -53,4 +93,5 @@
         android:layout_height="wrap_content"
         android:textSize="12sp"
         tools:text="timestamp" />
+
 </LinearLayout>
