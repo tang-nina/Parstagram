@@ -16,6 +16,9 @@ import com.bumptech.glide.Glide;
 import com.example.parstagram.Post;
 import com.example.parstagram.R;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +32,11 @@ public class PostDetailsFragment extends Fragment {
     TextView tvTimestamp;
     ImageView ivProfilePic;
     RelativeLayout rlPoster;
+    ImageView ivLike;
+    TextView tvLikes;
+    ArrayList<String> likes = new ArrayList<>();
+
+    ParseUser user = ParseUser.getCurrentUser();
 
     private PostsFragment.OnItemSelectedListener listener;
 
@@ -88,16 +96,91 @@ public class PostDetailsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @NonNull Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+
+        ArrayList temp = (ArrayList) user.get("likedPosts");
+        if(temp != null){
+            likes.addAll(temp);
+        }
+
         tvCaption= view.findViewById(R.id.tvCaption);
         tvUsername = view.findViewById(R.id.tvUsername);
         ivPost = view.findViewById(R.id.ivPost);
         tvTimestamp = view.findViewById(R.id.tvTimestamp);
         ivProfilePic = view.findViewById(R.id.ivProfilePic);
         rlPoster = view.findViewById(R.id.rlPoster);
+        tvLikes = view.findViewById(R.id.tvLikes);
 
         tvCaption.setText(curPost.getDescription());
         tvUsername.setText(curPost.getUser().getUsername());
         tvTimestamp.setText(Post.getRelativeTimeAgo(curPost.getTimestamp().toString()));
+
+        ivLike = view.findViewById(R.id.ivLike);
+
+        if(likes.contains(curPost.getId())){
+            System.out.println(curPost.getId());
+            Glide.with(getContext()).load(R.drawable.ufi_heart_active).into(ivLike);
+            ivLike.setColorFilter(getContext().getResources().getColor(R.color.red));
+
+            String likes = curPost.formatLikes();
+            tvLikes.setVisibility(View.VISIBLE);
+            tvLikes.setText(curPost.formatLikes());
+
+            ivLike.setTag("liked");
+        }else{
+            Glide.with(getContext()).load(R.drawable.ufi_heart).into(ivLike);
+            ivLike.setColorFilter(getContext().getResources().getColor(R.color.black));
+
+            String likes = curPost.formatLikes();
+            if(likes == null){
+                tvLikes.setVisibility(View.GONE);
+            }else{
+                tvLikes.setVisibility(View.VISIBLE);
+                tvLikes.setText(curPost.formatLikes());
+            }
+
+            ivLike.setTag("unliked");
+        }
+
+        ivLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(ivLike.getTag().equals("unliked")){
+                    curPost.addLike();
+                    likes.add(curPost.getId());
+                    user.put("likedPosts", likes);
+                    user.saveInBackground();
+
+                    Glide.with(getContext()).load(R.drawable.ufi_heart_active).into(ivLike);
+                    ivLike.setColorFilter(getContext().getResources().getColor(R.color.red));
+
+                    String likes = curPost.formatLikes();
+                    tvLikes.setVisibility(View.VISIBLE);
+                    tvLikes.setText(curPost.formatLikes());
+
+                    ivLike.setTag("liked");
+                }else if(ivLike.getTag().equals("liked")){
+                    curPost.subtractLike();
+                    likes.remove(curPost.getId());
+                    user.put("likedPosts", likes);
+                    user.saveInBackground();
+
+                    Glide.with(getContext()).load(R.drawable.ufi_heart).into(ivLike);
+                    ivLike.setColorFilter(getContext().getResources().getColor(R.color.black));
+
+                    String likes = curPost.formatLikes();
+                    if(likes == null){
+                        tvLikes.setVisibility(View.GONE);
+                    }else{
+                        tvLikes.setVisibility(View.VISIBLE);
+                        tvLikes.setText(curPost.formatLikes());
+                    }
+
+                    ivLike.setTag("unliked");
+
+                }
+            }
+        });
+
 
         ParseFile image = curPost.getImage();
         if(image != null){

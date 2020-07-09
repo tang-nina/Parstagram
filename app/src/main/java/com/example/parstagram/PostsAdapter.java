@@ -13,10 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -32,28 +29,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     OnClickListener onClickListener;
     Context context;
     List<Post> posts;
-    ArrayList<String> likes;
+    ArrayList<String> likes =  new ArrayList<String>();;
 
 public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickListener){
     this.context = context;
     this.posts = posts;
     this.onClickListener = onClickListener;
 
-    ParseQuery<ParseUser> query = ParseUser.getQuery();
-    query.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
-    query.include("likedPosts");
-
-    query.findInBackground(new FindCallback<ParseUser>() {
-        @Override
-        public void done(List<ParseUser> objects, ParseException e) {
-            ArrayList temp = (ArrayList) objects.get(0).get("likedPosts");
-            if(temp == null){
-                likes = new ArrayList<String>();
-            }else{
-                likes.addAll(temp);
-            }
-        }
-    });
+    ArrayList temp = (ArrayList) ParseUser.getCurrentUser().get("likedPosts");
+    if(temp != null){
+        likes.addAll(temp);
+    }
 }
 
     @NonNull

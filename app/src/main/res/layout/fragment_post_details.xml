@@ -37,10 +37,11 @@
         android:id="@+id/tvCaption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivPost"
+        android:layout_below="@id/tvLikes"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="false"
         android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         tools:text="Caption" />
 
     <TextView
@@ -64,5 +65,47 @@
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
         tools:src="@tools:sample/avatars" />
+
+    <RelativeLayout
+        android:id="@+id/rlActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivPost"
+        android:layout_marginTop="4dp">
+
+        <ImageView
+            android:id="@+id/ivLike"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:tag="unliked"
+            app:srcCompat="@drawable/ufi_heart" />
+
+        <ImageView
+            android:id="@+id/ivComment"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/ivLike"
+            app:srcCompat="@drawable/ufi_comment" />
+
+        <ImageView
+            android:id="@+id/ivDirect"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="false"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/ivComment"
+            app:srcCompat="@drawable/direct" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlActions"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        tools:text="8 likes" />
 
 </RelativeLayout>
