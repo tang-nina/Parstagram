@@ -112,6 +112,31 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull final View view, @NonNull Bundle savedInstanceState){
+        btnLogout = view.findViewById(R.id.btnLogout);
+        ivCamera = view.findViewById(R.id.ivCamera);
+
+        if(!(id.equals(ParseUser.getCurrentUser().getObjectId()))){
+            btnLogout.setVisibility(View.GONE);
+        }else{
+            btnLogout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ParseUser.logOut();
+                    //ParseUser currentUser = ParseUser.getCurrentUser();
+                    Intent intent = new Intent(view.getContext(), LoginActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+
+            ivCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchCamera();
+                }
+            });
+        }
+
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereEqualTo("objectId", id);
 
@@ -120,9 +145,6 @@ public class ProfileFragment extends Fragment {
             public void done(List<ParseUser> objects, ParseException e) {
                 user = objects.get(0);
                 posts = new ArrayList<Post>();
-
-                btnLogout = view.findViewById(R.id.btnLogout);
-                ivCamera = view.findViewById(R.id.ivCamera);
 
                 tvUsername = view.findViewById(R.id.tvUsername);
                 ivProfilePic = view.findViewById(R.id.ivProfilePic);
@@ -146,32 +168,12 @@ public class ProfileFragment extends Fragment {
 
                 tvUsername.setText(user.getUsername());
 
-
                 ParseFile profilePicture = user.getParseFile("profilePic");
                 if(profilePicture != null){
                     Glide.with(view.getContext()).load(profilePicture.getUrl()).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
                 }else{
                     Glide.with(view.getContext()).load(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
                 }
-
-                btnLogout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ParseUser.logOut();
-                        //ParseUser currentUser = ParseUser.getCurrentUser();
-                        Intent intent = new Intent(view.getContext(), LoginActivity.class);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
-                });
-
-
-                ivCamera.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        launchCamera();
-                    }
-                });
 
                 swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
                 // Setup refresh listener which triggers new data loading
