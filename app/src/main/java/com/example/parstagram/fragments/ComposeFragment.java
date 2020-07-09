@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +45,8 @@ public class ComposeFragment extends Fragment {
     ImageView ivPicture;
     Button btnSubmit;
 
+    ProgressBar pb;
+
     public ComposeFragment() {
         // Required empty public constructor
     }
@@ -67,6 +70,8 @@ public class ComposeFragment extends Fragment {
         btnTakePicture = view.findViewById(R.id.btnTakePicture);
         ivPicture = view.findViewById(R.id.ivPicture);
         btnSubmit = view.findViewById(R.id.btnSubmit);
+
+        pb = (ProgressBar) view.findViewById(R.id.pbLoading);
 
         btnTakePicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +155,9 @@ public class ComposeFragment extends Fragment {
     }
 
     private void sendPost(String caption, ParseUser user, File photo){
+        pb.setVisibility(ProgressBar.VISIBLE);
+
+
         Post post = new Post();
         post.setImage(new ParseFile(photo));
         post.setDescription(caption);
@@ -163,8 +171,10 @@ public class ComposeFragment extends Fragment {
                 }
                 etCaption.setText("");
                 ivPicture.setImageResource(0);
+                pb.setVisibility(ProgressBar.INVISIBLE);
             }
         });
+
     }
 
 }
