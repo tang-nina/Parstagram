@@ -2,23 +2,34 @@ package com.example.parstagram.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.parstagram.Comment;
+import com.example.parstagram.CommentsAdapter;
 import com.example.parstagram.Post;
 import com.example.parstagram.R;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +45,15 @@ public class PostDetailsFragment extends Fragment {
     RelativeLayout rlPoster;
     ImageView ivLike;
     TextView tvLikes;
+    TextView tvViewComments;
+    RecyclerView rvComments;
+    Button btnSubmit;
+    EditText etComment;
+    CommentsAdapter adapter;
+    LinearLayoutManager llm;
+
     ArrayList<String> likes = new ArrayList<>();
+    List<Comment> comments;
 
     ParseUser user = ParseUser.getCurrentUser();
 
@@ -102,6 +121,27 @@ public class PostDetailsFragment extends Fragment {
             likes.addAll(temp);
         }
 
+        comments = new ArrayList<>();
+
+        ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
+        query.include(Comment.KEY_COMMENTER);
+        query.include(Comment.KEY_COMMENT);
+        query.include(Comment.KEY_POST);
+       // query.setLimit(10); check this
+        query.addDescendingOrder(Comment.KEY_CREATED);
+        query.findInBackground(new FindCallback<Comment>() {
+            @Override
+            public void done(List<Comment> objects, ParseException e) {
+                if( e != null){
+                    Log.e("hi", "something went wrong", e);
+                    return;
+                }else{
+                        comments.addAll(objects);
+                }
+
+            }
+        });
+
         tvCaption= view.findViewById(R.id.tvCaption);
         tvUsername = view.findViewById(R.id.tvUsername);
         ivPost = view.findViewById(R.id.ivPost);
@@ -109,12 +149,22 @@ public class PostDetailsFragment extends Fragment {
         ivProfilePic = view.findViewById(R.id.ivProfilePic);
         rlPoster = view.findViewById(R.id.rlPoster);
         tvLikes = view.findViewById(R.id.tvLikes);
+        tvViewComments = view.findViewById(R.id.tvViewComments);
+        btnSubmit = view.findViewById(R.id.btnSubmit);
+        etComment = view.findViewById(R.id.etComment);
+
+        rvComments = view.findViewById(R.id.rvComments);
+        adapter = new CommentsAdapter(getContext(), comments);
+        llm = new LinearLayoutManager(getContext());
+        rvComments.setLayoutManager(llm);
+        rvComments.setAdapter(adapter);
 
         tvCaption.setText(curPost.getDescription());
         tvUsername.setText(curPost.getUser().getUsername());
         tvTimestamp.setText(Post.getRelativeTimeAgo(curPost.getTimestamp().toString()));
 
         ivLike = view.findViewById(R.id.ivLike);
+        System.out.println("HERE????");
 
         if(likes.contains(curPost.getId())){
             System.out.println(curPost.getId());
@@ -181,6 +231,14 @@ public class PostDetailsFragment extends Fragment {
             }
         });
 
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String comment = etComment.getText().toString();
+
+                //send to recycler view
+            }
+        });
 
         ParseFile image = curPost.getImage();
         if(image != null){
@@ -201,6 +259,14 @@ public class PostDetailsFragment extends Fragment {
             @Override
             public void onClick(View v){
                 listener.onUserDetailItemSelected(curPost.getUser().getObjectId());
+            }
+        });
+
+        tvViewComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.notifyDataSetChanged();
+                rvComments.setVisibility(View.VISIBLE);
             }
         });
 

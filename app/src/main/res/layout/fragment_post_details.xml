@@ -1,111 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     tools:context=".fragments.PostDetailsFragment">
 
     <RelativeLayout
-        android:id="@+id/rlPoster"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <RelativeLayout
+            android:id="@+id/rlPoster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="false"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/ivProfilePic"
+                android:textStyle="bold"
+                tools:text="Name" />
+
+            <ImageView
+                android:id="@+id/ivProfilePic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="0dp"
+                android:scaleType="fitCenter"
+                tools:src="@tools:sample/avatars" />
+        </RelativeLayout>
 
         <TextView
-            android:id="@+id/tvUsername"
+            android:id="@+id/tvCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/ivProfilePic"
-            android:textStyle="bold"
-            tools:text="Name" />
-
-        <ImageView
-            android:id="@+id/ivProfilePic"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="0dp"
-            android:scaleType="fitCenter"
-            tools:src="@tools:sample/avatars" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tvCaption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvLikes"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="false"
-        android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        tools:text="Caption" />
-
-    <TextView
-        android:id="@+id/tvTimestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvCaption"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="4dp"
-        android:textSize="12sp"
-        tools:text="timestamp" />
-
-    <ImageView
-        android:id="@+id/ivPost"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@+id/rlPoster"
-        android:layout_alignParentStart="false"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
-        tools:src="@tools:sample/avatars" />
-
-    <RelativeLayout
-        android:id="@+id/rlActions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ivPost"
-        android:layout_marginTop="4dp">
-
-        <ImageView
-            android:id="@+id/ivLike"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:tag="unliked"
-            app:srcCompat="@drawable/ufi_heart" />
-
-        <ImageView
-            android:id="@+id/ivComment"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="4dp"
-            android:layout_toEndOf="@id/ivLike"
-            app:srcCompat="@drawable/ufi_comment" />
-
-        <ImageView
-            android:id="@+id/ivDirect"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_below="@id/tvLikes"
+            android:layout_alignParentStart="true"
             android:layout_alignParentBottom="false"
-            android:layout_marginStart="4dp"
-            android:layout_toEndOf="@id/ivComment"
-            app:srcCompat="@drawable/direct" />
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            tools:text="Caption" />
+
+        <TextView
+            android:id="@+id/tvTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvCaption"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            tools:text="timestamp" />
+
+        <ImageView
+            android:id="@+id/ivPost"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@+id/rlPoster"
+            android:layout_alignParentStart="false"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars" />
+
+        <RelativeLayout
+            android:id="@+id/rlActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivPost"
+            android:layout_marginTop="4dp">
+
+            <ImageView
+                android:id="@+id/ivLike"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:tag="unliked"
+                app:srcCompat="@drawable/ufi_heart" />
+
+            <ImageView
+                android:id="@+id/ivComment"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/ivLike"
+                app:srcCompat="@drawable/ufi_comment" />
+
+            <ImageView
+                android:id="@+id/ivDirect"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="false"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/ivComment"
+                app:srcCompat="@drawable/direct" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvLikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rlActions"
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            tools:text="8 likes" />
+
+        <TextView
+            android:id="@+id/tvViewComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTimestamp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="4dp"
+            android:text="Click to view comments"
+            android:textSize="12sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvComments"
+            android:layout_width="match_parent"
+            android:layout_height="105dp"
+            android:layout_below="@+id/tvViewComments"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/etComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rvComments"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/btnSubmit"
+            android:ems="10"
+            android:hint="Add a comment..."
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rvComments"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:text="Button" />
 
     </RelativeLayout>
+</ScrollView>
 
-    <TextView
-        android:id="@+id/tvLikes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rlActions"
-        android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        tools:text="8 likes" />
 
-</RelativeLayout>
