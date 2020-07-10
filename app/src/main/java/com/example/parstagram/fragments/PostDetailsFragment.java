@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,6 +28,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,24 +61,14 @@ public class PostDetailsFragment extends Fragment {
 
     private PostsFragment.OnItemSelectedListener listener;
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
 
-    // TODO: Rename and change types of parameters
     private Post curPost;
 
     public PostDetailsFragment() {
         // Required empty public constructor
     }
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment PostDetailsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static PostDetailsFragment newInstance(Post post) {
         PostDetailsFragment fragment = new PostDetailsFragment();
         Bundle args = new Bundle();
@@ -123,25 +115,6 @@ public class PostDetailsFragment extends Fragment {
 
         comments = new ArrayList<>();
 
-        ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
-        query.include(Comment.KEY_COMMENTER);
-        query.include(Comment.KEY_COMMENT);
-        query.include(Comment.KEY_POST);
-       // query.setLimit(10); check this
-        query.addDescendingOrder(Comment.KEY_CREATED);
-        query.findInBackground(new FindCallback<Comment>() {
-            @Override
-            public void done(List<Comment> objects, ParseException e) {
-                if( e != null){
-                    Log.e("hi", "something went wrong", e);
-                    return;
-                }else{
-                        comments.addAll(objects);
-                }
-
-            }
-        });
-
         tvCaption= view.findViewById(R.id.tvCaption);
         tvUsername = view.findViewById(R.id.tvUsername);
         ivPost = view.findViewById(R.id.ivPost);
@@ -154,17 +127,41 @@ public class PostDetailsFragment extends Fragment {
         etComment = view.findViewById(R.id.etComment);
 
         rvComments = view.findViewById(R.id.rvComments);
+
         adapter = new CommentsAdapter(getContext(), comments);
         llm = new LinearLayoutManager(getContext());
         rvComments.setLayoutManager(llm);
         rvComments.setAdapter(adapter);
+
+
+        ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
+        query.include(Comment.KEY_COMMENTER);
+        query.include(Comment.KEY_COMMENT);
+        query.include(Comment.KEY_POST);
+        // query.setLimit(10); check this
+        query.whereEqualTo("post", curPost);
+        query.addDescendingOrder(Comment.KEY_CREATED);
+        query.findInBackground(new FindCallback<Comment>() {
+            @Override
+            public void done(List<Comment> objects, ParseException e) {
+                if( e != null){
+                    Log.e("hi", "something went wrong", e);
+                    return;
+                }else{
+                    comments.clear();
+                    comments.addAll(objects);
+                    adapter.notifyDataSetChanged();
+                    tvViewComments.setText("Comments (" + comments.size()+")");
+                }
+
+            }
+        });
 
         tvCaption.setText(curPost.getDescription());
         tvUsername.setText(curPost.getUser().getUsername());
         tvTimestamp.setText(Post.getRelativeTimeAgo(curPost.getTimestamp().toString()));
 
         ivLike = view.findViewById(R.id.ivLike);
-        System.out.println("HERE????");
 
         if(likes.contains(curPost.getId())){
             System.out.println(curPost.getId());
@@ -234,8 +231,23 @@ public class PostDetailsFragment extends Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String comment = etComment.getText().toString();
-
+                String commentText = etComment.getText().toString();
+                final Comment comment = new Comment();
+                comment.setComment(commentText);
+                comment.setPost(curPost);
+                comment.setUser(user);
+               comment.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null){
+                            Toast.makeText(getContext(), "Error while saving", Toast.LENGTH_SHORT).show();
+                        }
+                        etComment.setText("");
+                        comments.add(0, comment);
+                        adapter.notifyDataSetChanged();
+                        tvViewComments.setText("Comments (" + adapter.getItemCount()+")");
+                    }
+                });
                 //send to recycler view
             }
         });
@@ -262,13 +274,6 @@ public class PostDetailsFragment extends Fragment {
             }
         });
 
-        tvViewComments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                adapter.notifyDataSetChanged();
-                rvComments.setVisibility(View.VISIBLE);
-            }
-        });
 
     }
 

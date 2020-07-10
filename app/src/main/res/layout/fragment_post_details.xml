@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     tools:context=".fragments.PostDetailsFragment">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="4dp">
 
         <RelativeLayout
             android:id="@+id/rlPoster"
@@ -31,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/ivProfilePic"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="0dp"
                 android:scaleType="fitCenter"
                 tools:src="@tools:sample/avatars" />
@@ -45,7 +44,7 @@
             android:layout_below="@id/tvLikes"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="false"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             tools:text="Caption" />
 
@@ -56,7 +55,7 @@
             android:layout_below="@+id/tvCaption"
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:textSize="12sp"
             tools:text="timestamp" />
 
@@ -113,53 +112,45 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             tools:text="8 likes" />
 
-        <TextView
-            android:id="@+id/tvViewComments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvTimestamp"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="4dp"
-            android:text="Click to view comments"
-            android:textSize="12sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvComments"
-            android:layout_width="match_parent"
-            android:layout_height="105dp"
-            android:layout_below="@+id/tvViewComments"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:visibility="gone">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        </RelativeLayout>
-
         <EditText
             android:id="@+id/etComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rvComments"
+            android:layout_below="@id/tvTimestamp"
+            android:layout_alignParentBottom="false"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="4dp"
             android:layout_toStartOf="@+id/btnSubmit"
             android:ems="10"
-            android:hint="Add a comment..."
-            android:inputType="textMultiLine" />
+            android:hint="Add a comment"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/btnSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rvComments"
+            android:layout_below="@id/tvTimestamp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
-            android:text="Button" />
+            android:text="Submit" />
+
+        <TextView
+            android:id="@+id/tvViewComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/etComment"
+            android:layout_marginTop="8dp"
+            android:text="Comments" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvComments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tvViewComments"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentBottom="false"
+            android:layout_marginTop="4dp"
+            android:visibility="visible" />
 
     </RelativeLayout>
 </ScrollView>
