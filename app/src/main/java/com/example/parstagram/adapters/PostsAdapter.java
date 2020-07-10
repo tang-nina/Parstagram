@@ -1,4 +1,4 @@
-package com.example.parstagram;
+package com.example.parstagram.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.parstagram.R;
+import com.example.parstagram.models.Post;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
@@ -21,26 +23,27 @@ import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
-    public interface OnClickListener{
+    public interface OnClickListener {
         void onItemClickedPostDetails(int position);
+
         void onItemClickedUserDetails(String userId);
     }
 
     OnClickListener onClickListener;
     Context context;
     List<Post> posts;
-    ArrayList<String> likes =  new ArrayList<String>();;
+    ArrayList<String> likes = new ArrayList<String>();
 
-public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickListener){
-    this.context = context;
-    this.posts = posts;
-    this.onClickListener = onClickListener;
+    public PostsAdapter(Context context, List<Post> posts, OnClickListener onClickListener) {
+        this.context = context;
+        this.posts = posts;
+        this.onClickListener = onClickListener;
 
-    ArrayList temp = (ArrayList) ParseUser.getCurrentUser().get("likedPosts");
-    if(temp != null){
-        likes.addAll(temp);
+        ArrayList temp = (ArrayList) ParseUser.getCurrentUser().get("likedPosts");
+        if (temp != null) {
+            likes.addAll(temp);
+        }
     }
-}
 
     @NonNull
     @Override
@@ -51,8 +54,8 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-    Post post = posts.get(position);
-    holder.bind(post);
+        Post post = posts.get(position);
+        holder.bind(post);
     }
 
     @Override
@@ -72,20 +75,20 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
         ParseUser user = ParseUser.getCurrentUser();
 
-    LinearLayout llPosts;
-    TextView tvUsername;
-    TextView tvDescription;
-    TextView tvTimestamp;
-    ImageView ivImage;
-    ImageView ivProfilePic;
-    RelativeLayout rlHeader;
-    TextView tvLikes;
-    ImageView ivLike;
-    ImageView ivComment;
-    ImageView ivDirect;
+        LinearLayout llPosts;
+        TextView tvUsername;
+        TextView tvDescription;
+        TextView tvTimestamp;
+        ImageView ivImage;
+        ImageView ivProfilePic;
+        RelativeLayout rlHeader;
+        TextView tvLikes;
+        ImageView ivLike;
+        ImageView ivComment;
+        ImageView ivDirect;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,84 +112,70 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
             rlHeader = itemView.findViewById(R.id.rlHeader);
         }
 
-        public void bind(final Post post) {
+        private void likeAPost(Post post){
+            Glide.with(context).load(R.drawable.ufi_heart_active).into(ivLike);
+            ivLike.setColorFilter(context.getResources().getColor(R.color.red));
 
-            if(likes.contains(post.getId())){
-                System.out.println(post.getId());
-                Glide.with(context).load(R.drawable.ufi_heart_active).into(ivLike);
-                ivLike.setColorFilter(context.getResources().getColor(R.color.red));
+            formatLikesText(post);
+            ivLike.setTag("liked");
+        }
 
-                String likes = post.formatLikes();
+        private void unlikeAPost(Post post){
+            Glide.with(context).load(R.drawable.ufi_heart).into(ivLike);
+            ivLike.setColorFilter(context.getResources().getColor(R.color.black));
+
+            formatLikesText(post);
+            ivLike.setTag("unliked");
+        }
+
+        private void formatLikesText(Post post){
+            String likes = post.formatLikes();
+            if (likes == null) {
+                tvLikes.setVisibility(View.GONE);
+            } else {
                 tvLikes.setVisibility(View.VISIBLE);
                 tvLikes.setText(post.formatLikes());
+            }
+        }
 
-                ivLike.setTag("liked");
-            }else{
-                Glide.with(context).load(R.drawable.ufi_heart).into(ivLike);
-                ivLike.setColorFilter(context.getResources().getColor(R.color.black));
+        public void bind(final Post post) {
 
-                String likes = post.formatLikes();
-                if(likes == null){
-                    tvLikes.setVisibility(View.GONE);
-                }else{
-                    tvLikes.setVisibility(View.VISIBLE);
-                    tvLikes.setText(post.formatLikes());
-                }
-
-                ivLike.setTag("unliked");
+            if (likes.contains(post.getId())) {
+                likeAPost(post);
+            } else {
+                unlikeAPost(post);
             }
 
             ivLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(ivLike.getTag().equals("unliked")){
+                    if (ivLike.getTag().equals("unliked")) {
                         post.addLike();
                         likes.add(post.getId());
                         user.put("likedPosts", likes);
                         user.saveInBackground();
-
-                        Glide.with(context).load(R.drawable.ufi_heart_active).into(ivLike);
-                        ivLike.setColorFilter(context.getResources().getColor(R.color.red));
-
-                        String likes = post.formatLikes();
-                        tvLikes.setVisibility(View.VISIBLE);
-                        tvLikes.setText(post.formatLikes());
-
-                        ivLike.setTag("liked");
-                    }else if(ivLike.getTag().equals("liked")){
+                        likeAPost(post);
+                    } else if (ivLike.getTag().equals("liked")) {
                         post.subtractLike();
                         likes.remove(post.getId());
                         user.put("likedPosts", likes);
                         user.saveInBackground();
-
-                        Glide.with(context).load(R.drawable.ufi_heart).into(ivLike);
-                        ivLike.setColorFilter(context.getResources().getColor(R.color.black));
-
-                        String likes = post.formatLikes();
-                        if(likes == null){
-                            tvLikes.setVisibility(View.GONE);
-                        }else{
-                            tvLikes.setVisibility(View.VISIBLE);
-                            tvLikes.setText(post.formatLikes());
-                        }
-
-                        ivLike.setTag("unliked");
-
+                        unlikeAPost(post);
                     }
                 }
             });
 
 
-           llPosts.setOnClickListener(new View.OnClickListener() {
+            llPosts.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
+                public void onClick(View v) {
                     onClickListener.onItemClickedPostDetails(getAdapterPosition());
                 }
             });
 
             rlHeader.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
+                public void onClick(View v) {
                     onClickListener.onItemClickedUserDetails(post.getUser().getObjectId());
                 }
             });
@@ -194,26 +183,20 @@ public PostsAdapter(Context context, List<Post> posts,  OnClickListener onClickL
             tvUsername.setText(post.getUser().getUsername());
             tvDescription.setText(post.getDescription());
             tvTimestamp.setText(Post.getRelativeTimeAgo(post.getTimestamp().toString()));
-
-            String likes = post.formatLikes();
-            if(likes == null){
-                tvLikes.setVisibility(View.GONE);
-            }else{
-                tvLikes.setVisibility(View.VISIBLE);
-                tvLikes.setText(post.formatLikes());
-            }
+            formatLikesText(post);
 
             ParseFile image = post.getImage();
-            if(image !=null){
+            if (image != null) {
                 Glide.with(context).load(post.getImage().getUrl()).into(ivImage);
-            }else{
+            } else {
                 ivImage.setVisibility(View.GONE);
             }
 
             ParseFile profilePicture = post.getUser().getParseFile("profilePic");
-            if(profilePicture != null){
-                Glide.with(context).load(profilePicture.getUrl()).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
-            }else{
+            if (profilePicture != null) {
+                Glide.with(context).load(profilePicture.getUrl())
+                        .placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
+            } else {
                 Glide.with(context).load(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
             }
         }

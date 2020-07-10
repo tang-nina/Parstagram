@@ -26,7 +26,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.example.parstagram.EndlessRecyclerViewScrollListener;
 import com.example.parstagram.LoginActivity;
-import com.example.parstagram.Post;
+import com.example.parstagram.adapters.ProfileAdapter;
+import com.example.parstagram.models.Post;
 import com.example.parstagram.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -73,23 +74,16 @@ public class ProfileFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String USER_ID = "userId";
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(String userId) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, userId);
+        args.putString(USER_ID, userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,14 +92,13 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            id = getArguments().getString(ARG_PARAM1);
+            id = getArguments().getString(USER_ID);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -123,7 +116,6 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     ParseUser.logOut();
-                    //ParseUser currentUser = ParseUser.getCurrentUser();
                     Intent intent = new Intent(view.getContext(), LoginActivity.class);
                     startActivity(intent);
                     getActivity().finish();
@@ -159,36 +151,29 @@ public class ProfileFragment extends Fragment {
                 scrollListener = new EndlessRecyclerViewScrollListener(glm) {
                     @Override
                     public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                        // Triggered only when new data needs to be appended to the list
-                        // Add whatever code is needed to append new items to the bottom of the list
                         loadNextDataFromApi(page);
                     }
                 };
-                // Adds the scroll listener to RecyclerView
                 rvYourPosts.addOnScrollListener(scrollListener);
 
                 tvUsername.setText(user.getUsername());
 
                 ParseFile profilePicture = user.getParseFile("profilePic");
                 if(profilePicture != null){
-                    Glide.with(view.getContext()).load(profilePicture.getUrl()).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
+                    Glide.with(view.getContext()).load(profilePicture.getUrl())
+                            .placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
                 }else{
                     Glide.with(view.getContext()).load(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
                 }
 
                 swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-                // Setup refresh listener which triggers new data loading
                 swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        // Your code to refresh the list here.
-                        // Make sure you call swipeContainer.setRefreshing(false)
-                        // once the network request has completed successfully.
                         queryPost(true);
                     }
                 });
 
-                // Configure the refreshing colors
                 swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                         android.R.color.holo_green_light,
                         android.R.color.holo_orange_light,
@@ -304,16 +289,20 @@ public class ProfileFragment extends Fragment {
                     Log.e(TAG, "something went wrong", e);
                     return;
                 }else{
-                    lastPostTime = objects.get(objects.size()-1).getTimestamp();
-                    if(refresh){
-                        adapter.clear();
-                        adapter.addAll(objects);
-                        swipeContainer.setRefreshing(false);
-                        scrollListener.resetState();
-                    }else{
-                        posts.addAll(objects);
-                        adapter.notifyDataSetChanged();
+
+                    if(objects.size() !=0){
+                        lastPostTime = objects.get(objects.size()-1).getTimestamp();
+                        if(refresh){
+                            adapter.clear();
+                            adapter.addAll(objects);
+                            swipeContainer.setRefreshing(false);
+                            scrollListener.resetState();
+                        }else{
+                            posts.addAll(objects);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
+
                 }
 
             }

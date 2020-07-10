@@ -1,7 +1,6 @@
 package com.example.parstagram;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,10 +14,6 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -75,39 +70,10 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e(TAG, "Issue with login.", e);
                     return;
                 }else{
-                    Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
                     goToMainActivity();
                 }
             }
         });
-    }
-
-    boolean saveBitmapToFile(File dir, String fileName, Bitmap bm,
-                             Bitmap.CompressFormat format, int quality) {
-
-        File imageFile = new File(dir,fileName);
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(imageFile);
-
-            bm.compress(format,quality,fos);
-
-            fos.close();
-
-            return true;
-        }
-        catch (IOException e) {
-            Log.e("app",e.getMessage());
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
-        return false;
     }
 
     private void signUp(final String username, final String password){
@@ -120,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
         user.signUpInBackground(new SignUpCallback() {
             public void done(ParseException e) {
                 if (e == null) {
-                    Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
                     goToMainActivity();
                 } else {
                     Toast.makeText(LoginActivity.this, "Login unsuccessful.", Toast.LENGTH_SHORT).show();

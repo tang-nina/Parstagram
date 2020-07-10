@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.parstagram.EndlessRecyclerViewScrollListener;
-import com.example.parstagram.Post;
-import com.example.parstagram.PostsAdapter;
+import com.example.parstagram.models.Post;
+import com.example.parstagram.adapters.PostsAdapter;
 import com.example.parstagram.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -42,7 +42,6 @@ public class PostsFragment extends Fragment {
 
     // Define the events that the fragment will use to communicate
     public interface OnItemSelectedListener {
-        // This can be any number of events to be sent to the activity
         public void onPostDetailsItemSelected(Post post);
         public void onUserDetailItemSelected(String userId);
     }
@@ -77,8 +76,7 @@ public class PostsFragment extends Fragment {
         posts = new ArrayList<Post>();
 
         llm = new LinearLayoutManager(getContext());
-        //click listener for each item in the to do list
-        //will bring up a screen where user can edit the item
+
         PostsAdapter.OnClickListener onClickListener = new PostsAdapter.OnClickListener(){
             @Override
             public void onItemClickedPostDetails(int position) {
@@ -98,22 +96,16 @@ public class PostsFragment extends Fragment {
         scrollListener = new EndlessRecyclerViewScrollListener(llm) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                loadNextDataFromApi(page);
+                loadNextDataFromApi();
             }
         };
-        // Adds the scroll listener to RecyclerView
+
         rvPosts.addOnScrollListener(scrollListener);
 
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 queryPost(true);
             }
         });
@@ -127,15 +119,7 @@ public class PostsFragment extends Fragment {
         queryPost(false);
     }
 
-    // Append the next page of data into the adapter
-    // This method probably sends out a network request and appends new data items to your adapter.
-    public void loadNextDataFromApi(int offset) {
-        // Send an API request to retrieve appropriate paginated data
-        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
-        //  --> Deserialize and construct new model objects from the API response
-        //  --> Append the new data objects to the existing set of items inside the array of items
-        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
-
+    public void loadNextDataFromApi() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
         query.setLimit(20);
@@ -154,11 +138,8 @@ public class PostsFragment extends Fragment {
                         adapter.addAll(objects);
                     }
                 }
-
             }
         });
-
-
     }
 
     protected void queryPost(final boolean refresh){

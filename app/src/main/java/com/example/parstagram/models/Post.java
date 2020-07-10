@@ -1,4 +1,4 @@
-package com.example.parstagram;
+package com.example.parstagram.models;
 
 import android.text.format.DateUtils;
 
@@ -19,7 +19,6 @@ public class Post extends ParseObject implements Serializable {
     public static final String KEY_IMAGE = "image";
     public static final String KEY_CREATED = "createdAt";
     public static final String KEY_LIKES = "likes";
-    public static final String KEY_ID = "objectId";
 
     public Post(){}
 

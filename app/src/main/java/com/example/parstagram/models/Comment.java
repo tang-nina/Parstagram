@@ -1,4 +1,4 @@
-package com.example.parstagram;
+package com.example.parstagram.models;
 
 import android.text.format.DateUtils;
 
@@ -15,35 +15,37 @@ public class Comment extends ParseObject {
 
     public static final String KEY_COMMENT = "comment";
     public static final String KEY_COMMENTER = "commenter";
-   public static final String KEY_CREATED = "createdAt";
+    public static final String KEY_CREATED = "createdAt";
     public static final String KEY_POST = "post";
-    //public static final String KEY_ID = "objectId";
 
-    public Comment(){}
+    public Comment() {
+    }
 
-    public Date getTimestamp(){ return getCreatedAt(); }
+    public Date getTimestamp() {
+        return getCreatedAt();
+    }
 
-    public String getId(){ return getObjectId(); }
+    public String getId() {
+        return getObjectId();
+    }
 
-    public String getComment(){ return getString(KEY_COMMENT); }
+    public String getComment() {
+        return getString(KEY_COMMENT);
+    }
 
-    public void setComment(String comment){
+    public void setComment(String comment) {
         put(KEY_COMMENT, comment);
     }
 
-    public ParseUser getUser(){
+    public ParseUser getUser() {
         return getParseUser(KEY_COMMENTER);
     }
 
-    public void setUser(ParseUser user){
+    public void setUser(ParseUser user) {
         put(KEY_COMMENTER, user);
     }
 
-    public Post getPost(){
-        return (Post) getParseObject(KEY_POST);
-    }
-
-    public void setPost(Post post){
+    public void setPost(Post post) {
         put(KEY_POST, post);
     }
 
@@ -62,7 +64,4 @@ public class Comment extends ParseObject {
         }
         return relativeDate;
     }
-
-
-
 }

@@ -1,4 +1,4 @@
-package com.example.parstagram.fragments;
+package com.example.parstagram.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.parstagram.Post;
+import com.example.parstagram.models.Post;
 import com.example.parstagram.R;
 import com.parse.ParseFile;
 
@@ -65,7 +65,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
         public void bind(final Post post) {
             ParseFile image = post.getImage();
-            if(image !=null){
+            if(image != null){
                 Glide.with(context).load(post.getImage().getUrl()).into(ivPost);
             }else{
                 ivPost.setVisibility(View.GONE);

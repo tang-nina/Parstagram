@@ -1,4 +1,4 @@
-package com.example.parstagram;
+package com.example.parstagram.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.parstagram.R;
+import com.example.parstagram.models.Comment;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
@@ -66,7 +68,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             tvTime.setText(Comment.getRelativeTimeAgo(comment.getTimestamp().toString()));
             ParseFile profilePicture = user.getParseFile("profilePic");
             if(profilePicture != null){
-                Glide.with(context).load(profilePicture.getUrl()).placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
+                Glide.with(context).load(profilePicture.getUrl())
+                        .placeholder(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
             }else{
                 Glide.with(context).load(R.drawable.profilepic).fitCenter().circleCrop().into(ivProfilePic);
             }

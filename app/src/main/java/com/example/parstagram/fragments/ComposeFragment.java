@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.example.parstagram.Post;
+import com.example.parstagram.models.Post;
 import com.example.parstagram.R;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -34,7 +34,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class ComposeFragment extends Fragment {
     private static final String TAG = "ComposeFragment";
-
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
 
     public String photoFileName = "photo.jpg";
@@ -59,7 +58,6 @@ public class ComposeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_compose, container, false);
     }
 
@@ -93,8 +91,8 @@ public class ComposeFragment extends Fragment {
                     Toast.makeText(view.getContext(), "Please include a picture", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                ParseUser curUser = ParseUser.getCurrentUser();
 
+                ParseUser curUser = ParseUser.getCurrentUser();
                 sendPost(caption, curUser, photoFile);
             }
         });
@@ -154,9 +152,8 @@ public class ComposeFragment extends Fragment {
         }
     }
 
-    private void sendPost(String caption, ParseUser user, File photo){
+    private void sendPost(String caption, ParseUser user, File photo) {
         pb.setVisibility(ProgressBar.VISIBLE);
-
 
         Post post = new Post();
         post.setImage(new ParseFile(photo));
@@ -165,7 +162,7 @@ public class ComposeFragment extends Fragment {
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e != null){
+                if (e != null) {
                     Log.e(TAG, "done: error while saving", e);
                     Toast.makeText(getContext(), "Error while saving", Toast.LENGTH_SHORT).show();
                 }
@@ -174,7 +171,5 @@ public class ComposeFragment extends Fragment {
                 pb.setVisibility(ProgressBar.INVISIBLE);
             }
         });
-
     }
-
 }

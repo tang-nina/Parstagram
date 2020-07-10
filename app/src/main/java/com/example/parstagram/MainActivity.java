@@ -13,11 +13,11 @@ import com.example.parstagram.fragments.ComposeFragment;
 import com.example.parstagram.fragments.PostDetailsFragment;
 import com.example.parstagram.fragments.PostsFragment;
 import com.example.parstagram.fragments.ProfileFragment;
+import com.example.parstagram.models.Post;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity implements PostsFragment.OnItemSelectedListener {
-    private static final String TAG = "MainActivity";
     BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity implements PostsFragment.OnI
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) { //menuItem is one of the items we put on the bar
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                //menuItem is one of the items we put on the bar
                 Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_home:
